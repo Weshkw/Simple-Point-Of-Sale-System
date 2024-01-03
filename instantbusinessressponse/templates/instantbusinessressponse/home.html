@@ -1,0 +1,57 @@
+<!-- Your HTML file -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>homepage</title>
+    <!-- use the defer attribute in the script tag to ensure the script is executed after the HTML is parsed-->
+    <script>
+        const username = "{{ request.user.username }}";  // Set the username in a global variable
+    </script>
+    <script src="{% static 'js/home.js' %}" defer></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}"> 
+
+    
+</head>
+<body>
+    <nav>
+        <input type="text" id="searchInput" placeholder="Search for products">
+        <a href="{% url 'salesrecord' %}">Sales for {{ request.user.username }}</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Product Image</th>
+                <th>Product Name</th>
+                <th>Product Price (Ksh)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td><img src="{{ product.product_image.url }}" alt="{{ product.product_name }}" class="image"></td>
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.product_price }}</td>
+                <td><button class="wannasell" data-product-name="{{ product.product_name }}" data-product-price="{{ product.product_price }}" >Sell {{ product.product_name }} </button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Modal -->
+    <div class="modal-container" id="sellConfirmationModal">
+        <div class="modal">
+            <p>Confirm you want to sell <span id="productName"></span>.</p>
+            <button class="modal-confirmation">Yes</button>
+            <button class="modal-cancel">No</button>
+        </div>
+    </div>
+
+    
+</body>
+</html>

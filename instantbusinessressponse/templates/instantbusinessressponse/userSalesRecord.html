@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales for {{ request.user.username }}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/usersalesrecords.css' %}">
+
+</head>
+<body>
+    <nav>
+        <h1>{{ request.user.username }}'s Sales Record</h1>
+        <a href="{% url 'cancelled-sales' %}">Click to see cancelled sales</a>
+    </nav>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if Sales %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Sale Price</th>
+                    <th>Sale Image</th>
+                    <th>Sale Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in Sales %}
+                    <tr>
+                        <td>{{ sale.product.product_name }}</td>
+                        <td>{{ sale.sale_price }}</td>
+                        <td>
+                            {% if sale.sale_image %}
+                                <img src="{{ sale.sale_image.url }}" alt="Sale Image">
+                            {% else %}
+                                No Image
+                            {% endif %}
+                        </td>
+                        <td>{{ sale.sale_date }}</td>
+                        <td>
+                            <button onclick="showCancelForm('{{ sale.pk }}')">Cancel sale</button>
+                            <div id="cancelForm_{{ sale.pk }}" style="display: none;">
+                                <form method="post" action="{% url 'cancel-sale' pk=sale.pk %}">
+                                    {% csrf_token %}
+                                    <label for="cancellation_reason">Cancellation Reason:</label>
+                                    <textarea name="cancellation_reason" id="cancellation_reason_{{ sale.pk }}" rows="4" cols="50" required></textarea>
+
+                                    <div>
+                                        <button type="submit">Submit</button>
+                                        <button type="button" onclick="hideCancelForm('{{ sale.pk }}')">Abort</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No sales records available.</p>
+    {% endif %} 
+
+    <script>
+        function showCancelForm(saleId) {
+            document.getElementById('cancelForm_' + saleId).style.display = 'block';
+        }
+
+        function hideCancelForm(saleId) {
+            document.getElementById('cancelForm_' + saleId).style.display = 'none';
+        }
+    </script>
+</body>
+</html>

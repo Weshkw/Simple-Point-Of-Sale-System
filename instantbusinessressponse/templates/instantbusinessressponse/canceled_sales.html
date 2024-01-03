@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancelled Sales</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
+
+        h2 {
+            color: #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            max-width: 50px;
+            max-height: 50px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            table {
+                font-size: 12px;
+            }
+
+            img {
+                max-width: 30px;
+                max-height: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Cancelled Sales</h2>
+    {% if cancelledsales %}
+        <table>
+            <tr>
+                <th>Product Name</th>
+                <th>Cancellation Reason</th>
+                <th>Cancelled Sale Price</th>
+                <th>Cancelled Sale Image</th>
+                <th>Cancelled Sale Date</th>
+            </tr>
+            {% for cancelled_sale in cancelledsales %}
+                <tr>
+                    <td>{{ cancelled_sale.product_name }}</td>
+                    <td>{{ cancelled_sale.cancellation_reason }}</td>
+                    <td>{{ cancelled_sale.cancelled_sale_price }}</td>
+                    <td>
+                        {% if cancelled_sale.cancelled_sale_image %}
+                            <img src="{{ cancelled_sale.cancelled_sale_image.url }}" alt="Cancelled Sale Image">
+                        {% else %}
+                            No Image
+                        {% endif %}
+                    </td>
+                    <td>{{ cancelled_sale.cancelled_sale_date }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No cancelled sales available.</p>
+    {% endif %}
+</body>
+</html>
