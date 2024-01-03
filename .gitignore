@@ -1,0 +1,4 @@
+# Ignore contents of specific folders within static
+static/product_images/*
+static/sale_images/*
+static/cancelled_sale_images/*
