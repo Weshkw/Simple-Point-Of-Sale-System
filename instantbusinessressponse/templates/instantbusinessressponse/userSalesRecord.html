@@ -12,6 +12,7 @@
     <nav>
         <h1>{{ request.user.username }}'s Sales Record</h1>
         <a href="{% url 'cancelled-sales' %}">Click to see cancelled sales</a>
+        <a href="{% url 'home' %}">Home</a>
     </nav>
 
     {% if messages %}
