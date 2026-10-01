@@ -1,0 +1,38 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Point of Sale{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <header class="topbar">
+        <a class="brand" href="{% url 'home' %}">Point of Sale</a>
+        <nav class="topbar-links">
+            <a href="{% url 'home' %}">Till</a>
+            <a href="{% url 'sales-record' %}">My sales</a>
+            <a href="{% url 'cancelled-sales' %}">Cancelled</a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="link-button">Log out {{ user.username }}</button>
+            </form>
+        </nav>
+    </header>
+    {% endif %}
+
+    <main class="page">
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li class="message message-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

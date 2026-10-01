@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}My sales · Point of Sale{% endblock %}
+
+{% block content %}
+<h1>My sales</h1>
+
+{% if sales %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Name</th>
+                <th class="numeric">Price (Ksh)</th>
+                <th>Date</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales %}
+            <tr>
+                <td>
+                    {% if sale.sale_image %}
+                    <img class="thumbnail" src="{{ sale.sale_image.url }}" alt="{{ sale.sale_name }}">
+                    {% endif %}
+                </td>
+                <td>{{ sale.sale_name }}</td>
+                <td class="numeric">{{ sale.sale_price }}</td>
+                <td>{{ sale.sale_date }}</td>
+                <td class="actions">
+                    <details class="cancel-sale">
+                        <summary class="button button-danger">Cancel sale</summary>
+                        <form method="post" action="{% url 'cancel-sale' pk=sale.pk %}">
+                            {% csrf_token %}
+                            <label for="cancellation-reason-{{ sale.pk }}">Reason</label>
+                            <textarea id="cancellation-reason-{{ sale.pk }}" name="cancellation_reason"
+                                      rows="3" maxlength="1000" required></textarea>
+                            <button type="submit" class="button button-danger">Confirm cancellation</button>
+                        </form>
+                    </details>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="empty">You have not recorded any sales yet.</p>
+{% endif %}
+{% endblock %}

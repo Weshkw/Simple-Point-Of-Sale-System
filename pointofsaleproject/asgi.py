@@ -1,31 +1,25 @@
-"""
-ASGI config for pointofsaleproject project.
-
-It exposes the ASGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/
-"""
+"""ASGI entry point: plain HTTP goes to Django, WebSockets go to Channels."""
 
 import os
 
 from django.core.asgi import get_asgi_application
-from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.auth import AuthMiddlewareStack
 
-import instantbusinessressponse.routing
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pointofsaleproject.settings")
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pointofsaleproject.settings')
-# Initialize Django ASGI application early to ensure the AppRegistry
-# is populated before importing code that may import ORM models.
+# Populate the app registry before importing anything that touches models.
 django_asgi_app = get_asgi_application()
 
-application = ProtocolTypeRouter({
-    "http": django_asgi_app,
-    'websocket':AuthMiddlewareStack(
-        URLRouter(
-            instantbusinessressponse.routing.websocket_urlpatterns
-        )
-    )
-    # Just HTTP for now. (We can add other protocols later.)
-})
+from channels.auth import AuthMiddlewareStack  # noqa: E402
+from channels.routing import ProtocolTypeRouter, URLRouter  # noqa: E402
+from channels.security.websocket import AllowedHostsOriginValidator  # noqa: E402
+
+from sales.routing import websocket_urlpatterns  # noqa: E402
+
+application = ProtocolTypeRouter(
+    {
+        "http": django_asgi_app,
+        "websocket": AllowedHostsOriginValidator(
+            AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+        ),
+    }
+)

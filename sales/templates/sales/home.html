@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Till · Point of Sale{% endblock %}
+
+{% block head %}
+<script src="{% static 'js/till.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+    <h1>Till</h1>
+    <input type="search" id="product-search" class="search" placeholder="Search products" aria-label="Search products">
+</div>
+
+{% if products %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Name</th>
+                <th class="numeric">Price (Ksh)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr data-product-row data-product-name="{{ product.product_name|lower }}">
+                <td>
+                    {% if product.product_image %}
+                    <img class="thumbnail" src="{{ product.product_image.url }}" alt="{{ product.product_name }}">
+                    {% endif %}
+                </td>
+                <td>{{ product.product_name }}</td>
+                <td class="numeric">{{ product.product_price }}</td>
+                <td class="actions">
+                    <button type="button" class="button button-primary"
+                            data-sell-product="{{ product.pk }}"
+                            data-product-label="{{ product.product_name }}">Sell</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="empty">No products yet. Add some in the admin site.</p>
+{% endif %}
+
+<dialog id="confirm-sale" class="dialog">
+    <form method="dialog">
+        <p>Sell <strong id="confirm-sale-product"></strong>?</p>
+        <div class="dialog-actions">
+            <button value="cancel" class="button">No</button>
+            <button value="confirm" class="button button-primary">Yes, sell</button>
+        </div>
+    </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+{% endblock %}

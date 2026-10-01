@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Cancelled sales · Point of Sale{% endblock %}
+
+{% block content %}
+<h1>Cancelled sales</h1>
+
+{% if cancelled_sales %}
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Name</th>
+                <th>Reason</th>
+                <th class="numeric">Price (Ksh)</th>
+                <th>Cancelled on</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cancelled_sale in cancelled_sales %}
+            <tr>
+                <td>
+                    {% if cancelled_sale.cancelled_sale_image %}
+                    <img class="thumbnail" src="{{ cancelled_sale.cancelled_sale_image.url }}" alt="{{ cancelled_sale.product_name }}">
+                    {% endif %}
+                </td>
+                <td>{{ cancelled_sale.product_name }}</td>
+                <td>{{ cancelled_sale.cancellation_reason }}</td>
+                <td class="numeric">{{ cancelled_sale.cancelled_sale_price }}</td>
+                <td>{{ cancelled_sale.cancelled_sale_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="empty">No cancelled sales.</p>
+{% endif %}
+{% endblock %}
