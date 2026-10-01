@@ -1,4 +1,23 @@
-# Ignore contents of specific folders within static
-static/product_images/*
-static/sale_images/*
-static/cancelled_sale_images/*
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+/media/
+/staticfiles/
+
+# Local configuration
+.env
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
